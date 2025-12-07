@@ -1,9 +1,11 @@
 """
-EEG-BCI Framework
+LLM-EEG Framework
 =================
 
 A modular Brain-Computer Interface framework with LLM integration and AI Agents
 for motor imagery EEG classification.
+
+Repository: https://github.com/erlika/llm-eeg
 
 Features:
 ---------

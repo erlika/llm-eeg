@@ -205,7 +205,14 @@ class ConfigManager:
                     'C5', 'C3', 'C1', 'Cz', 'C2', 'C4', 'C6',
                     'CP3', 'CP1', 'CPz', 'CP2', 'CP4',
                     'P1', 'Pz', 'P2', 'POz'
-                ]
+                ],
+                # User's Google Drive dataset location
+                'google_drive': {
+                    'folder_id': '14tFFsegwr6oYF4wUuf_mjNOAgfuQ_Bwk',
+                    'folder_url': 'https://drive.google.com/drive/folders/14tFFsegwr6oYF4wUuf_mjNOAgfuQ_Bwk',
+                    'colab_mount_path': '/content/drive/MyDrive',
+                    'dataset_name': 'BCI_Competition_IV_2a'
+                }
             },
             
             # Preprocessing defaults

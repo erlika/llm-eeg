@@ -1,6 +1,8 @@
-# EEG-BCI Framework
+# LLM-EEG Framework
 
 A modular Brain-Computer Interface framework with LLM integration and AI Agents for motor imagery EEG classification.
+
+🔗 **Repository**: https://github.com/erlika/llm-eeg
 
 ## Features
 
@@ -21,10 +23,16 @@ This framework is designed for the **BCI Competition IV-2a** dataset:
 - 250 Hz sampling rate
 - 288 trials per subject per session
 
+## Dataset
+
+📁 **Google Drive Dataset**: [BCI Competition IV-2a](https://drive.google.com/drive/folders/14tFFsegwr6oYF4wUuf_mjNOAgfuQ_Bwk)
+
+The dataset will be automatically loaded from Google Drive when running in Google Colab.
+
 ## Project Structure
 
 ```
-eeg-bci-framework/
+llm-eeg/
 ├── src/
 │   ├── core/               # Interfaces, types, config, registry
 │   │   ├── interfaces/     # Abstract interfaces
@@ -60,18 +68,22 @@ eeg-bci-framework/
 
 ```python
 # Clone the repository
-!git clone https://github.com/erlika/eeg-pre.git
-%cd eeg-pre
+!git clone https://github.com/erlika/llm-eeg.git
+%cd llm-eeg
 
 # Install dependencies
 !pip install -r requirements.txt
+
+# Mount Google Drive for dataset access
+from google.colab import drive
+drive.mount('/content/drive')
 ```
 
 ### Local Installation
 
 ```bash
-git clone https://github.com/erlika/eeg-pre.git
-cd eeg-pre
+git clone https://github.com/erlika/llm-eeg.git
+cd llm-eeg
 pip install -r requirements.txt
 ```
 
@@ -115,6 +127,10 @@ config.get('agents.dva.confidence_threshold')  # 0.8
 config.get('agents.apa.policy.type')           # 'q_learning'
 config.get('agents.apa.cross_trial_learning')  # True
 config.get('llm.provider')                     # 'phi3'
+
+# Access Google Drive dataset settings
+config.get('data.google_drive.folder_url')     # Your dataset URL
+config.get('data.google_drive.colab_mount_path')  # '/content/drive/MyDrive'
 ```
 
 ## Key Design Decisions (User-Approved)
