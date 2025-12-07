@@ -116,7 +116,19 @@ data:
 
 ## [2.0.0] - 2024-12-07 - Phase 2: Data Loading & Processing
 
+**Branch: `phase-2`**
+
 ### Added
+
+#### Google Colab Notebook (`notebooks/`)
+- `Phase2_Data_Loading_Processing.ipynb`: Complete Phase 2 tutorial notebook
+  - Step-by-step environment setup for Google Colab
+  - Custom `BCICIV2aLoader` for BCI Competition IV-2a MAT files
+  - Data validation and quality assessment examples
+  - Preprocessing pipeline demonstration with visualizations
+  - PyTorch dataset integration and DataLoader setup
+  - Multi-subject loading with LOSO cross-validation
+  - Simple CNN training example with evaluation metrics
 
 #### Data Loaders (`src/data/loaders/`)
 - `BaseDataLoader`: Abstract base class with common loading functionality
