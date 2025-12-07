@@ -47,9 +47,9 @@ Date: 2024
 """
 
 # =============================================================================
-# Interfaces
+# Interfaces (using relative imports)
 # =============================================================================
-from src.core.interfaces import (
+from .interfaces import (
     # Data Loading
     IDataLoader,
     
@@ -77,9 +77,9 @@ from src.core.interfaces import (
 )
 
 # =============================================================================
-# Data Types
+# Data Types (using relative imports)
 # =============================================================================
-from src.core.types import (
+from .types import (
     EEGData,
     TrialData,
     EventMarker,
@@ -87,15 +87,15 @@ from src.core.types import (
 )
 
 # =============================================================================
-# Configuration & Registry
+# Configuration & Registry (using relative imports)
 # =============================================================================
-from src.core.config import (
+from .config import (
     ConfigManager,
     get_config,
     load_config
 )
 
-from src.core.registry import (
+from .registry import (
     ComponentRegistry,
     get_registry,
     register,
@@ -104,9 +104,9 @@ from src.core.registry import (
 )
 
 # =============================================================================
-# Exceptions
+# Exceptions (using relative imports)
 # =============================================================================
-from src.core.exceptions import (
+from .exceptions import (
     # Base
     BCIFrameworkError,
     

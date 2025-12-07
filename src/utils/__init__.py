@@ -9,32 +9,14 @@ Available Modules:
 - logging: Centralized logging configuration
 - validation: Input validation functions and decorators
 
-Example Usage:
-    ```python
-    from src.utils import (
-        # Logging
-        setup_logging, get_logger, log_execution_time,
-        
-        # Validation
-        validate_array, validate_config, check_range
-    )
-    
-    # Setup logging
-    setup_logging(level='INFO', log_file='logs/app.log')
-    logger = get_logger(__name__)
-    
-    # Validate inputs
-    validate_array(data, expected_ndim=3, name='data')
-    ```
-
 Author: EEG-BCI Framework
 Date: 2024
 """
 
 # =============================================================================
-# Logging Utilities
+# Logging Utilities (using relative imports)
 # =============================================================================
-from src.utils.logging import (
+from .logging import (
     setup_logging,
     get_logger,
     set_level,
@@ -49,7 +31,7 @@ from src.utils.logging import (
 # =============================================================================
 # Validation Utilities
 # =============================================================================
-from src.utils.validation import (
+from .validation import (
     # Type checking
     check_type,
     check_not_none,
