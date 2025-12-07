@@ -149,7 +149,68 @@ print(f"Cross-Trial Learning: {config.get('agents.apa.cross_trial_learning')}")
 # Output: True
 ```
 
-### Create EEG Data
+### Load EEG Data (Phase 2)
+
+```python
+from src.data import load_eeg_file, DataLoaderFactory
+
+# Method 1: Quick one-liner
+eeg_data = load_eeg_file('/content/drive/MyDrive/BCI_IV_2a/A01T.mat')
+print(f"Loaded: {eeg_data}")
+
+# Method 2: Factory with config
+loader = DataLoaderFactory.create('mat', config={'include_eog': False})
+eeg_data = loader.load('/content/drive/MyDrive/BCI_IV_2a/A01T.mat')
+
+# Extract trials
+X, y = eeg_data.get_trials_array(trial_length_sec=4.0)
+print(f"Trials: {X.shape}, Labels: {y.shape}")
+```
+
+### Preprocess Data (Phase 2)
+
+```python
+from src.preprocessing import create_standard_pipeline
+
+# Create standard preprocessing pipeline
+pipeline = create_standard_pipeline(
+    sampling_rate=250,
+    notch_freq=50,       # European power line
+    bandpass_low=8,      # Mu rhythm
+    bandpass_high=30     # Beta rhythm
+)
+
+# Apply preprocessing
+processed_data = pipeline.process(eeg_data)
+print(f"Preprocessed: {processed_data}")
+```
+
+### Create PyTorch Dataset (Phase 2)
+
+```python
+from src.datasets import BCICIV2aDataset, train_val_test_split
+from torch.utils.data import DataLoader
+
+# Load dataset for subject 1
+dataset = BCICIV2aDataset.from_subject(
+    subject_id=1,
+    session='T',
+    data_dir='/content/drive/MyDrive/BCI_IV_2a',
+    trial_length_sec=4.0
+)
+
+# Split into train/validation
+train_ds, val_ds = train_val_test_split(dataset, val_ratio=0.2)
+
+# Create DataLoader
+train_loader = DataLoader(train_ds, batch_size=32, shuffle=True)
+
+for batch_x, batch_y in train_loader:
+    print(f"Batch: {batch_x.shape}, Labels: {batch_y.shape}")
+    break
+```
+
+### Create EEG Data Manually
 
 ```python
 import numpy as np
@@ -269,7 +330,7 @@ config.get('data.google_drive.colab_mount_path')   # '/content/drive/MyDrive'
 | Phase | Description | Status |
 |-------|-------------|--------|
 | **Phase 1** | Foundation & Setup | ✅ Complete |
-| **Phase 2** | Data Loading & Processing | ⏳ Pending |
+| **Phase 2** | Data Loading & Processing | ✅ Complete |
 | **Phase 3** | Feature Extraction & Classification | ⏳ Pending |
 | **Phase 4** | Agent System (APA, DVA) | ⏳ Pending |
 | **Phase 5** | LLM Integration | ⏳ Pending |
@@ -283,6 +344,18 @@ config.get('data.google_drive.colab_mount_path')   # '/content/drive/MyDrive'
 - ✅ 30+ Custom exceptions
 - ✅ Logging and validation utilities
 - ✅ Google Colab compatibility (relative imports)
+
+### Phase 2 Deliverables (Complete)
+- ✅ **Data Loaders**: MATLoader for BCI Competition IV-2a .mat files
+- ✅ **Data Factory**: DataLoaderFactory with auto-detection
+- ✅ **Preprocessing Pipeline**: Composable preprocessing steps
+- ✅ **Filters**: BandpassFilter (8-30 Hz), NotchFilter (50/60 Hz)
+- ✅ **Normalization**: Z-score, min-max, robust, L2 methods
+- ✅ **Data Validation**: DataValidator for structure/format checks
+- ✅ **Quality Assessment**: QualityChecker for SNR, artifacts, line noise
+- ✅ **PyTorch Integration**: EEGDataset, BCICIV2aDataset classes
+- ✅ **Data Splitting**: train_val_test_split, cross-validation folds
+- ✅ **Unit Tests**: Comprehensive test coverage
 
 ---
 
@@ -342,6 +415,18 @@ EEG-BCI Framework Team
 ---
 
 ## Changelog
+
+### v2.0.0 (Phase 2) - Data Loading & Processing
+- **Data Loaders**: MATLoader for BCI Competition IV-2a .mat files
+- **Factory Pattern**: DataLoaderFactory with auto-detection by file extension
+- **Preprocessing Pipeline**: Composable, sequential preprocessing
+- **Filters**: BandpassFilter (Butterworth), NotchFilter (IIR)
+- **Normalization**: Z-score, min-max, robust, L2 normalization
+- **Validation**: DataValidator for structure/format validation
+- **Quality Assessment**: QualityChecker (SNR, artifacts, line noise)
+- **PyTorch Integration**: EEGDataset, BCICIV2aDataset classes
+- **Data Splitting**: train_val_test_split, create_cv_folds
+- **Unit Tests**: Comprehensive test coverage for all components
 
 ### v1.0.0 (Phase 1) - Foundation & Setup
 - Initial release with core framework architecture

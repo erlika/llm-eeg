@@ -114,15 +114,96 @@ data:
 
 ---
 
+## [2.0.0] - 2024-12-07 - Phase 2: Data Loading & Processing
+
+### Added
+
+#### Data Loaders (`src/data/loaders/`)
+- `BaseDataLoader`: Abstract base class with common loading functionality
+- `MATLoader`: MATLAB .mat file loader optimized for BCI Competition IV-2a
+  - Automatic signal/event extraction
+  - Support for scipy, mat73, and pymatreader libraries
+  - Channel selection and EOG exclusion
+  - Event code mapping for motor imagery classes
+- `DataLoaderFactory`: Factory pattern for loader creation
+  - Auto-detection by file extension
+  - Configurable initialization
+  - Custom loader registration support
+- Convenience functions: `load_eeg_file()`, `create_loader()`, `create_mat_loader()`
+
+#### Preprocessing (`src/preprocessing/`)
+- `PreprocessingPipeline`: Composable preprocessing pipeline
+  - Sequential step execution
+  - Step-wise debugging
+  - Execution time tracking
+  - Configuration from dict/YAML
+- `BandpassFilter`: Butterworth bandpass filter
+  - Zero-phase filtering (filtfilt)
+  - Configurable passband (default: 8-30 Hz for motor imagery)
+  - Support for 2D and 3D arrays
+- `NotchFilter`: IIR notch filter for line noise removal
+  - 50/60 Hz power line removal
+  - Harmonic removal support
+  - Configurable quality factor
+- `Normalization`: Signal normalization
+  - Methods: z-score, min-max, robust, L2
+  - Axes: channel-wise, trial-wise, global, sample-wise
+- Factory function: `create_standard_pipeline()`
+
+#### Data Validators (`src/data/validators/`)
+- `DataValidator`: Comprehensive data validation
+  - Structure validation (shapes, types)
+  - Value validation (NaN, Inf, amplitude)
+  - Format validation (channels, sampling rate, events)
+  - BCI Competition IV-2a specific validation
+- `ValidationResult`: Container for validation results
+- `ValidationError`: Custom exception for validation failures
+- `QualityChecker`: Signal quality assessment
+  - SNR computation (signal vs noise band power)
+  - Line noise level detection
+  - Artifact ratio calculation
+  - Flatline channel detection
+  - Per-channel quality scores
+  - Trial-level quality assessment
+  - Clean trial filtering
+
+#### PyTorch Datasets (`src/datasets/`)
+- `EEGDataset`: Base PyTorch Dataset for EEG trials
+  - Support for numpy arrays and TrialData lists
+  - Optional transforms
+  - Return tensors or numpy arrays
+- `BCICIV2aDataset`: Specialized for BCI Competition IV-2a
+  - `from_subject()`: Load single subject
+  - `from_subjects()`: Load multiple subjects
+  - Subject/session metadata tracking
+  - Class name mapping
+- Utility functions:
+  - `train_val_test_split()`: Split dataset
+  - `create_cv_folds()`: Cross-validation folds
+
+#### Unit Tests (`tests/unit/`)
+- `test_data_loaders.py`: Tests for data loading
+- `test_preprocessing.py`: Tests for preprocessing pipeline
+- `test_validators.py`: Tests for validation and quality checking
+
+#### Constants
+- `BCI_IV_2A_EEG_CHANNELS`: 22 standard EEG channel names
+- `BCI_IV_2A_EOG_CHANNELS`: 3 EOG channel names
+- `BCI_IV_2A_ALL_CHANNELS`: All 25 channel names
+- `BCI_IV_2A_EVENT_CODES`: Event code to label mapping
+- `BCI_IV_2A_CLASS_MAPPING`: Event code to class index mapping
+- `BCI_IV_2A_SAMPLING_RATE`: 250 Hz
+- `BCI_IV_2A_TRIALS_PER_SESSION`: 288
+
+### Changed
+- Updated README with Phase 2 usage examples
+- Updated project structure documentation
+
+---
+
 ## Upcoming
 
-### [1.1.0] - Phase 2: Data Loading & Processing (Planned)
-- MatLoader for BCI Competition IV-2a .mat files
-- Google Drive integration for Colab
-- Preprocessing pipeline (bandpass, notch, artifact removal)
-- Data validation and checkpointing
-
-### [1.2.0] - Phase 3: Feature Extraction & Classification (Planned)
+### [2.1.0] - Phase 3: Feature Extraction & Classification (Planned)
 - CSP feature extractor
 - Band power extractor
 - EEGNet classifier
