@@ -125,6 +125,12 @@ pip install -r requirements.txt
 
 ## Quick Start
 
+### Google Colab Notebooks
+
+| Notebook | Description | Open in Colab |
+|----------|-------------|---------------|
+| [Phase 2: Data Loading & Processing](notebooks/Phase2_Data_Loading_Processing.ipynb) | Complete tutorial for loading, preprocessing, and PyTorch integration | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/erlika/llm-eeg/blob/phase-2/notebooks/Phase2_Data_Loading_Processing.ipynb) |
+
 ### Basic Usage
 
 ```python
