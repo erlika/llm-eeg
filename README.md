@@ -129,7 +129,8 @@ pip install -r requirements.txt
 
 | Notebook | Description | Open in Colab |
 |----------|-------------|---------------|
-| [Phase 2: Data Loading & Processing](notebooks/Phase2_Data_Loading_Processing.ipynb) | Complete tutorial for loading, preprocessing, and PyTorch integration | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/erlika/llm-eeg/blob/phase-2/notebooks/Phase2_Data_Loading_Processing.ipynb) |
+| [Phase 2: Data Loading & Processing](notebooks/Phase2_Data_Loading_Processing.ipynb) | Complete tutorial for loading, preprocessing, and PyTorch integration | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/erlika/llm-eeg/blob/main/notebooks/Phase2_Data_Loading_Processing.ipynb) |
+| [Phase 3: Feature Extraction & Classification](notebooks/Phase3_Feature_Extraction_Classification.ipynb) | CSP features, LDA/SVM/EEGNet classification, model comparison | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/erlika/llm-eeg/blob/main/notebooks/Phase3_Feature_Extraction_Classification.ipynb) |
 
 ### Basic Usage
 
@@ -257,6 +258,58 @@ print(f"Classes: {dataset_info.class_names}")
 print(f"Channels: {len(dataset_info.channel_names)}")
 ```
 
+### Feature Extraction (Phase 3)
+
+```python
+from src.features import (
+    CSPExtractor, BandPowerExtractor, 
+    FeatureExtractionPipeline, create_motor_imagery_pipeline
+)
+
+# Method 1: CSP Feature Extraction
+csp = CSPExtractor(n_components=6)
+csp.initialize({'sampling_rate': 250})
+X_train_csp = csp.fit_extract(X_train, y_train)
+X_test_csp = csp.extract(X_test)
+
+# Method 2: Motor Imagery Pipeline (CSP + Band Power)
+pipeline = create_motor_imagery_pipeline(n_csp_components=6, sampling_rate=250)
+X_features = pipeline.fit_extract(X_train, y_train)
+
+print(f"CSP Features: {X_train_csp.shape}")
+print(f"Pipeline Features: {X_features.shape}")
+```
+
+### Classification (Phase 3)
+
+```python
+from src.classifiers import (
+    create_lda_classifier, create_svm_classifier,
+    create_eegnet_classifier, ClassifierFactory
+)
+
+# Traditional ML: CSP + LDA
+lda = create_lda_classifier(n_classes=4)
+lda.fit(X_train_csp, y_train)
+predictions = lda.predict(X_test_csp)
+probabilities = lda.predict_proba(X_test_csp)
+
+# Traditional ML: CSP + SVM
+svm = create_svm_classifier(kernel='rbf', C=1.0, n_classes=4)
+svm.fit(X_train_csp, y_train)
+predictions_svm = svm.predict(X_test_csp)
+
+# Deep Learning: EEGNet (end-to-end)
+eegnet = create_eegnet_classifier(
+    n_classes=4, n_channels=22, n_samples=1000
+)
+eegnet.fit(X_train, y_train, epochs=50, validation_data=(X_val, y_val))
+predictions_dl = eegnet.predict(X_test)
+
+# Using Factory
+clf = ClassifierFactory.create('eegnet', n_classes=4, n_channels=22, n_samples=1000)
+```
+
 ---
 
 ## Configuration
@@ -337,7 +390,7 @@ config.get('data.google_drive.colab_mount_path')   # '/content/drive/MyDrive'
 |-------|-------------|--------|
 | **Phase 1** | Foundation & Setup | ✅ Complete |
 | **Phase 2** | Data Loading & Processing | ✅ Complete |
-| **Phase 3** | Feature Extraction & Classification | ⏳ Pending |
+| **Phase 3** | Feature Extraction & Classification | ✅ Complete |
 | **Phase 4** | Agent System (APA, DVA) | ⏳ Pending |
 | **Phase 5** | LLM Integration | ⏳ Pending |
 | **Phase 6** | Evaluation & Documentation | ⏳ Pending |
@@ -362,6 +415,18 @@ config.get('data.google_drive.colab_mount_path')   # '/content/drive/MyDrive'
 - ✅ **PyTorch Integration**: EEGDataset, BCICIV2aDataset classes
 - ✅ **Data Splitting**: train_val_test_split, cross-validation folds
 - ✅ **Unit Tests**: Comprehensive test coverage
+
+### Phase 3 Deliverables (Complete)
+- ✅ **CSP Extractor**: Common Spatial Pattern feature extraction (scipy-based)
+- ✅ **Band Power Extractor**: Frequency band power (mu, beta) via Welch PSD
+- ✅ **Time Domain Extractor**: Statistical features, Hjorth parameters
+- ✅ **Feature Pipeline**: Modular multi-extractor pipeline
+- ✅ **LDA Classifier**: Linear Discriminant Analysis with shrinkage
+- ✅ **SVM Classifier**: Support Vector Machine (RBF, linear kernels)
+- ✅ **EEGNet Classifier**: Compact CNN for end-to-end EEG classification
+- ✅ **Classifier Factory**: Dynamic classifier creation
+- ✅ **Unit Tests**: 71 tests (33 features + 38 classifiers)
+- ✅ **Colab Notebook**: Phase3_Feature_Extraction_Classification.ipynb
 
 ---
 
